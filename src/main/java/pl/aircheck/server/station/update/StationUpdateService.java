@@ -15,9 +15,8 @@ public class StationUpdateService {
     }
 
     public Optional<LocalDate> getUpdateDate() {
-        return updateRepository.findById(1L).map(StationUpdate::getTime);
+        return updateRepository.findById(1L).map(StationUpdate::getDate);
     }
-
 
     public void updateUpdateDate(LocalDate date) {
         updateRepository.save(new StationUpdate(date));

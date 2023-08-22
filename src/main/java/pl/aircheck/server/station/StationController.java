@@ -1,11 +1,12 @@
 package pl.aircheck.server.station;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import pl.aircheck.server.NoDataFromOriginException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 class StationController {
@@ -18,15 +19,7 @@ class StationController {
 
     @RequestMapping("/station/findAll")
     @ResponseBody
-    public List<Station> findAll() {
-
-        if(stationService.isStationsUpToDate()) {
-            return stationService.findAll();
-        }
-        else {
-            Optional<List<Station>> stations = stationService.updateStationsAndGetAll();
-            return stations.orElseGet(stationService::findAll);
-        }
+    public ResponseEntity<List<Station>> findAll() throws NoDataFromOriginException {
+        return ResponseEntity.ok(stationService.getAll());
     }
-
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+public
 class StationService {
 
     private final StationRepository stationRepository;
@@ -32,47 +33,54 @@ class StationService {
         this.config = config;
     }
 
-    public Optional<List<Station>> updateStationsAndGetAll() {
-        try{
-            ResponseEntity<List<Station>> responseEntity = restTemplate.exchange(
-                    config.getOriginUrl()+ config.getStationEndpoint(),
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<Station>>() {}
-            );
-            Optional<List<Station>> stations = Optional.ofNullable(responseEntity.getBody());
-            if(stations.isPresent()) {
-                stationRepository.deleteAll();
-                stationRepository.saveAll(stations.get());
-                updateStationService.updateUpdateDate(LocalDate.now());
-                return stations;
+    public Station getSingle(long id){
+        if(isAnUpdateNeeded()) {
+            Optional<List<Station>> stationsFromOrigin = getAllFromOrigin();
+            if(stationsFromOrigin.isPresent()) {
+                updateData(stationsFromOrigin.get());
+                //I tak potrzebuje tutaj tego kodu więc można to wydzielić do osobnej metody i używać zamiast sqlek
+                return stationsFromOrigin.get().stream()
+                        .filter(((station) -> station.getId() == id))
+                        .findFirst()
+                        .orElse(null);
             }
-            else {
-                throw new NoDataFromOriginException("The response from origin was empty");
-            }
-
-        } catch(NoDataFromOriginException | RestClientException e) {
-            System.out.println("Server wasn't able to fetch data from origin. Update failed!");
-            e.printStackTrace();
-            return Optional.empty();
         }
+        return stationRepository.findById(id).orElse(null);
     }
 
-    public List<Station> findAll() {
-        Iterable<Station> stations = this.stationRepository.findAll();
-        List<Station> list = new ArrayList<>();
-        stations.forEach(list::add);
-        return list;
+    public List<Station> getAll() throws NoDataFromOriginException {
+        if(isAnUpdateNeeded()) {
+            Optional<List<Station>> stationsFromOrigin = getAllFromOrigin();
+            stationsFromOrigin.ifPresent(this::updateData);
+            return stationsFromOrigin.orElseThrow(() -> new NoDataFromOriginException("Data is outdated and fetch from origin failed"));
+        }
+        Iterable<Station> stations = stationRepository.findAll();
+        List<Station> stationsFromDatabase = new ArrayList<>();
+        stations.forEach(stationsFromDatabase::add);
+        return stationsFromDatabase;
     }
 
-    public boolean isStationsUpToDate() {
+    public void updateData(List<Station> stations) {
+        stationRepository.deleteAll();
+        stationRepository.saveAll(stations);
+        updateStationService.updateUpdateDate(LocalDate.now());
+    }
+    public Optional<List<Station>> getAllFromOrigin() {
+        ResponseEntity<List<Station>> responseEntity = restTemplate.exchange(
+                config.getOriginUrl()+ config.getStationEndpoint(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Station>>() {}
+        );
+        return Optional.ofNullable(responseEntity.getBody());
+    }
+
+    public boolean isAnUpdateNeeded() {
         Optional<LocalDate> updateDate = updateStationService.getUpdateDate();
-
         if(updateDate.isPresent()) {
             LocalDate currentDate = LocalDate.now();
             Period period = Period.between(updateDate.get(), currentDate);
-            int stationPeriod = config.getExpirationStations();
-            return period.getDays() < config.getExpirationStations();
-        } else return false;
+            return period.getDays() > config.getExpirationStations();
+        } else return true;
     }
 }

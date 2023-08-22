@@ -4,11 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-class Station {
+public class Station {
+
     @Id
     private long id;
+
     private String stationName;
-    private String addressStreet;
     private String gegrLat;
     private String gegrLon;
 
@@ -29,14 +30,6 @@ class Station {
 
     public void setStationName(String stationName) {
         this.stationName = stationName;
-    }
-
-    public String getAddressStreet() {
-        return addressStreet;
-    }
-
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
     }
 
     public String getGegrLat() {

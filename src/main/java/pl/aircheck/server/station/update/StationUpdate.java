@@ -10,24 +10,24 @@ class StationUpdate {
 
     @Id
     private final long id = 1L;
-    private LocalDate time;
+    private LocalDate date;
 
     public StationUpdate() {
     }
 
     public StationUpdate(LocalDate time) {
-        this.time = time;
+        this.date = time;
     }
 
-    public void setTime(LocalDate time) {
-        this.time = time;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public long getId() {
         return id;
     }
 
-    public LocalDate getTime() {
-        return time;
+    public LocalDate getDate() {
+        return date;
     }
 }
