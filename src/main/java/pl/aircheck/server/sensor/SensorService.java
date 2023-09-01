@@ -60,7 +60,7 @@ public class SensorService {
     }
 
     public void updateData(List<Sensor> sensors, long id) {
-        sensorUpdateService.deleteUpdateDate(sensors.get(0).getUpdate());
+        sensorRepository.findById(id).ifPresent((s) -> sensorUpdateService.deleteUpdateDate(s.getUpdate()));
         sensorRepository.deleteAllById(Stream.of(id).toList());
 
         SensorUpdate update = new SensorUpdate(LocalDate.now());

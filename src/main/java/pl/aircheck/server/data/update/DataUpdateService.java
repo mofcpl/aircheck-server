@@ -23,10 +23,16 @@ public class DataUpdateService {
     }
 
     public void deleteUpdateDate(DataUpdate dataUpdate) {
-        dataUpdateRepository.delete()
+        dataUpdateRepository.delete(dataUpdate);
+    }
+
+    public void deleteUpdateDate(long id) {
+        dataUpdateRepository.deleteById(id);
     }
 
     public void saveUpdateDate(DataUpdate update) {
         dataUpdateRepository.save(update);
     }
+
+
 }

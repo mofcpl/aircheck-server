@@ -5,6 +5,7 @@ import pl.aircheck.server.data.update.DataUpdate;
 import pl.aircheck.server.data.values.DataValues;
 import pl.aircheck.server.sensor.Sensor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,8 +20,8 @@ public class Data {
     @ManyToOne()
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
-    @OneToMany(mappedBy = "data")
-    private List<DataValues> values;
+    @OneToMany(mappedBy = "data", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    private List<DataValues> values = new ArrayList<>();
 
     public Data() {
     }
@@ -30,6 +31,10 @@ public class Data {
         this.update = update;
         this.sensor = sensor;
         this.values = values;
+    }
+
+    public void addValue(DataValues value) {
+        values.add(value);
     }
 
     public List<DataValues> getValues() {

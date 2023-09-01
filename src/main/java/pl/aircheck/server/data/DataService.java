@@ -10,15 +10,15 @@ import pl.aircheck.server.Config;
 import pl.aircheck.server.NoDataFromOriginException;
 import pl.aircheck.server.data.update.DataUpdate;
 import pl.aircheck.server.data.update.DataUpdateService;
+import pl.aircheck.server.data.values.DataValues;
 import pl.aircheck.server.sensor.Sensor;
 import pl.aircheck.server.sensor.SensorService;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 
 @Service
@@ -39,7 +39,6 @@ public class DataService {
     }
 
     public Data getAll(long id) throws NoDataFromOriginException {
-        //Trzeba rozdzielić sprawdzanie na, czy dane istnieją w bazie i czy są aktualne
         if(isAnUpdateNeeded(id)) {
             Optional<Data> dataFromOrigin = getAllFromOrigin(id);
             dataFromOrigin.ifPresent((s) -> updateData(s, id));
@@ -49,15 +48,23 @@ public class DataService {
     }
 
     public void updateData(Data data, long id) {
-        dataUpdateService.deleteUpdateDate(data.getUpdate());
+        dataRepository.findById(id).ifPresent(d -> dataUpdateService.deleteUpdateDate(d.getUpdate()));
         dataRepository.deleteById(id);
 
+        //Trzeba to pozmieniać na zapis kaskadowy
         DataUpdate update = new DataUpdate(LocalDateTime.now());
         dataUpdateService.saveUpdateDate(update);
         Sensor sensor = sensorService.getSingle(id);
 
+
+        data.setId(id);
         data.setUpdate(update);
         data.setSensor(sensor);
+
+        List<DataValues> rawValues = data.getValues();
+        for (DataValues val : rawValues) {
+            val.setData(data);
+        }
 
         dataRepository.save(data);
     }
