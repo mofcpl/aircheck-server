@@ -1,5 +1,6 @@
 package pl.aircheck.server.data.values;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import pl.aircheck.server.data.Data;
 
@@ -15,9 +16,14 @@ public class DataValues {
     private float value;
     private String date;
 
-    @ManyToOne()
-    @JoinColumn(name = "data_id", nullable=false)
-    private Data data;
+    public DataValues() {
+    }
+
+    public DataValues(long id, float value, String date) {
+        this.id = id;
+        this.value = value;
+        this.date = date;
+    }
 
     public long getId() {
         return id;
@@ -28,27 +34,6 @@ public class DataValues {
     }
 
     public float getValue() {
-        return value;
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
-
-    public DataValues() {
-    }
-
-    public DataValues(float value, String date, Data data) {
-        this.value = value;
-        this.date = date;
-        this.data = data;
-    }
-
-    public float getDataValue() {
         return value;
     }
 

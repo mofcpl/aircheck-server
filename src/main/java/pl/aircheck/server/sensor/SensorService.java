@@ -36,19 +36,19 @@ public class SensorService {
         this.config = config;
     }
 
-    public Sensor getSingle(long id) {
-        if(isAnUpdateNeeded(id)) {
-            Optional<List<Sensor>> sensorFromOrigin = getAllFromOrigin(id);
-            if(sensorFromOrigin.isPresent()) {
-                updateData(sensorFromOrigin.get(), id);
-                return sensorFromOrigin.get().stream()
-                        .filter(((station) -> station.getId() == id))
-                        .findFirst()
-                        .orElse(null);
-            }
-        }
-        return sensorRepository.findById(id).orElse(null);
-    }
+//    public Sensor getSingle(long id) {
+//        if(isAnUpdateNeeded(id)) {
+//            Optional<List<Sensor>> sensorFromOrigin = getAllFromOrigin(id);
+//            if(sensorFromOrigin.isPresent()) {
+//                updateData(sensorFromOrigin.get(), id);
+//                return sensorFromOrigin.get().stream()
+//                        .filter(((station) -> station.getId() == id))
+//                        .findFirst()
+//                        .orElse(null);
+//            }
+//        }
+//        return sensorRepository.findById(id).orElse(null);
+//    }
 
     public List<Sensor> getAll(long id) throws NoDataFromOriginException {
         if(isAnUpdateNeeded(id)) {
