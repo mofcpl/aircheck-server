@@ -9,17 +9,17 @@ import pl.aircheck.server.NoDataFromOriginException;
 import java.util.List;
 
 @Controller
-class StationController {
+class StationsController {
 
-    private final StationService stationService;
+    private final StationsService stationService;
 
-    public StationController(StationService stationService) {
+    public StationsController(StationsService stationService) {
         this.stationService = stationService;
     }
 
     @RequestMapping("/station/findAll")
     @ResponseBody
     public ResponseEntity<List<Station>> findAll() throws NoDataFromOriginException {
-        return ResponseEntity.ok(stationService.getAll());
+        return ResponseEntity.ok(stationService.getData());
     }
 }

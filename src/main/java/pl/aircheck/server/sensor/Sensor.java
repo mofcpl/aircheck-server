@@ -1,12 +1,8 @@
 package pl.aircheck.server.sensor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
-import pl.aircheck.server.sensor.update.SensorUpdate;
-import pl.aircheck.server.station.Station;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Sensor {
@@ -14,38 +10,17 @@ public class Sensor {
     @Id
     private long id;
 
-    private String paramName;
-
-    @ManyToOne()
-    @JoinColumn(name = "update_id")
-    private SensorUpdate update;
-    @ManyToOne()
-    @JoinColumn(name = "station_id")
-    private Station station;
-
+    private LocalDateTime update;
+    @Lob
+    private String data;
 
     public Sensor() {
     }
 
-    public Sensor(long id, String paramName) {
+    public Sensor(long id, LocalDateTime update, String data) {
         this.id = id;
-        this.paramName = paramName;
-    }
-
-    public Station getStation() {
-        return station;
-    }
-
-    public void setStation(Station station) {
-        this.station = station;
-    }
-
-    public SensorUpdate getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(SensorUpdate update) {
         this.update = update;
+        this.data = data;
     }
 
     public long getId() {
@@ -56,16 +31,19 @@ public class Sensor {
         this.id = id;
     }
 
-    public String getParamName() {
-        return paramName;
+    public LocalDateTime getUpdate() {
+        return update;
     }
 
-    public void setParamName(String paramName) {
-        this.paramName = paramName;
+    public void setUpdate(LocalDateTime update) {
+        this.update = update;
     }
 
-    @JsonProperty("param")
-    private void unpackParam(JsonNode param) {
-        this.paramName = param.get("paramName").asText();
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

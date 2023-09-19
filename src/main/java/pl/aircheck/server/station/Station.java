@@ -16,6 +16,13 @@ public class Station {
     public Station() {
     }
 
+    public Station(long id, String stationName, String gegrLat, String gegrLon) {
+        this.id = id;
+        this.stationName = stationName;
+        this.gegrLat = gegrLat;
+        this.gegrLon = gegrLon;
+    }
+
     public long getId() {
         return id;
     }

@@ -8,89 +8,55 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.aircheck.server.Config;
 import pl.aircheck.server.NoDataFromOriginException;
-import pl.aircheck.server.sensor.update.SensorUpdate;
-import pl.aircheck.server.sensor.update.SensorUpdateService;
-import pl.aircheck.server.station.Station;
-import pl.aircheck.server.station.StationService;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class SensorService {
 
     private final SensorRepository sensorRepository;
-    private final SensorUpdateService sensorUpdateService;
-    private final StationService stationService;
     private final RestTemplate restTemplate;
     private final Config config;
 
-    public SensorService(SensorRepository sensorRepository, SensorUpdateService sensorUpdateService, StationService stationService, Config config, RestTemplateBuilder restTemplateBuilder) {
+
+    public SensorService(SensorRepository sensorRepository, Config config, RestTemplateBuilder restTemplateBuilder) {
         this.sensorRepository = sensorRepository;
-        this.sensorUpdateService = sensorUpdateService;
-        this.stationService = stationService;
         this.restTemplate = restTemplateBuilder.build();
         this.config = config;
     }
 
-//    public Sensor getSingle(long id) {
-//        if(isAnUpdateNeeded(id)) {
-//            Optional<List<Sensor>> sensorFromOrigin = getAllFromOrigin(id);
-//            if(sensorFromOrigin.isPresent()) {
-//                updateData(sensorFromOrigin.get(), id);
-//                return sensorFromOrigin.get().stream()
-//                        .filter(((station) -> station.getId() == id))
-//                        .findFirst()
-//                        .orElse(null);
-//            }
-//        }
-//        return sensorRepository.findById(id).orElse(null);
-//    }
-
-    public List<Sensor> getAll(long id) throws NoDataFromOriginException {
-        if(isAnUpdateNeeded(id)) {
-            Optional<List<Sensor>> sensorsFromOrigin = getAllFromOrigin(id);
-            sensorsFromOrigin.ifPresent((s) -> updateData(s, id));
-            return sensorsFromOrigin.orElseThrow(() -> new NoDataFromOriginException("Data is outdated and fetch from origin failed"));
+    public String getData(long id) throws NoDataFromOriginException {
+        Optional<Sensor> buffer = sensorRepository.findById(id);
+        if(buffer.isEmpty() || isOutdated(buffer.get())) {
+            Optional<String> dataFromOrigin = getAllFromOrigin(id);
+            dataFromOrigin.ifPresent((d) -> updateData(d, id));
+            return dataFromOrigin.orElseThrow(() -> new NoDataFromOriginException("Data is outdated and fetch from origin failed"));
         }
-        return sensorRepository.getAllByStationId(id);
+        return buffer.get().getData();
     }
 
-    public void updateData(List<Sensor> sensors, long id) {
-        sensorRepository.findById(id).ifPresent((s) -> sensorUpdateService.deleteUpdateDate(s.getUpdate()));
-        sensorRepository.deleteAllById(Stream.of(id).toList());
+    public void updateData(String data, long id) {
+        sensorRepository.deleteAll();
 
-        SensorUpdate update = new SensorUpdate(LocalDate.now());
-        sensorUpdateService.saveUpdateDate(update);
-        Station station = stationService.getSingle(id);
-
-        for(Sensor sensor: sensors) {
-            sensor.setUpdate(update);
-            sensor.setStation(station);
-        }
-        sensorRepository.saveAll(sensors);
+        Sensor buffer = new Sensor(id, LocalDateTime.now(), data);
+        sensorRepository.save(buffer);
     }
 
-    public Optional<List<Sensor>> getAllFromOrigin(long id) {
-        ResponseEntity<List<Sensor>> responseEntity = restTemplate.exchange(
-                config.getOriginUrl() + config.getSensorEndpoint() + id,
+    public Optional<String> getAllFromOrigin(long id) {
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                config.getOriginUrl()+ config.getSensorEndpoint() + id,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Sensor>>() {}
+                new ParameterizedTypeReference<String>() {}
         );
         return Optional.ofNullable(responseEntity.getBody());
     }
 
-    public boolean isAnUpdateNeeded(long id) {
-        Optional<LocalDate> updateDate = sensorRepository.getUpdateDate(id);
-        if(updateDate.isPresent()) {
-            LocalDate currentDate = LocalDate.now();
-            Period period = Period.between(updateDate.get(), currentDate);
-            return period.getDays() > config.getExpirationStations();
-        } else return true;
+    private boolean isOutdated(Sensor buffer) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        Duration duration = Duration.between(buffer.getUpdate(), currentDate);
+        return duration.toDays() > config.getExpirationStations();
     }
-
 }

@@ -20,7 +20,7 @@ class SensorController {
 
     @RequestMapping("/station/sensors/{id}")
     @ResponseBody
-    public ResponseEntity<List<Sensor>> getSensors(@PathVariable("id") long id) throws NoDataFromOriginException {
-        return ResponseEntity.ok(sensorService.getAll(id));
+    public ResponseEntity<String> getSensors(@PathVariable("id") long id) throws NoDataFromOriginException {
+        return ResponseEntity.ok(sensorService.getData(id));
     }
 }
