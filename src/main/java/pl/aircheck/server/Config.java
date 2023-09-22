@@ -8,7 +8,6 @@ public class Config {
     private final String stationEndpoint;
     private final String sensorEndpoint;
     private final String dataEndpoint;
-
     private final String summaryEndpoint;
     private final int expirationStations;
     private final int expirationSensors;

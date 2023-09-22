@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import pl.aircheck.server.Config;
 import pl.aircheck.server.NoDataFromOriginException;
 
+import java.time.Duration;
 import java.util.List;
 
 @Controller
@@ -15,14 +17,17 @@ class SensorController {
 
     private final SensorService sensorService;
 
-    SensorController(SensorService sensorService) {
+    SensorController(SensorService sensorService, Config config) {
         this.sensorService = sensorService;
+        this.sensorService.setExpirationTime(config.getExpirationSensors());
+        this.sensorService.setEndpoint(config.getSensorEndpoint());
+        this.sensorService.setDurationUnit(Duration::toDays);
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/station/sensors/{id}")
     @ResponseBody
     public ResponseEntity<String> getSensors(@PathVariable("id") long id) throws NoDataFromOriginException {
-        return ResponseEntity.ok(sensorService.getData(id));
+        return ResponseEntity.ok(sensorService.getData(id, new Sensor()));
     }
 }
