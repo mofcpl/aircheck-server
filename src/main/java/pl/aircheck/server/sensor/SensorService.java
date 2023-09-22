@@ -30,7 +30,7 @@ public class SensorService {
     public String getData(long id) throws NoDataFromOriginException {
         Optional<Sensor> buffer = sensorRepository.findById(id);
         if(buffer.isEmpty() || isOutdated(buffer.get())) {
-            Optional<String> dataFromOrigin = getAllFromOrigin(id);
+            Optional<String> dataFromOrigin = getDataFromOrigin(id);
             dataFromOrigin.ifPresent((d) -> updateData(d, id));
             return dataFromOrigin.orElseThrow(() -> new NoDataFromOriginException("Data is outdated and fetch from origin failed"));
         }
@@ -38,13 +38,13 @@ public class SensorService {
     }
 
     public void updateData(String data, long id) {
-        sensorRepository.deleteAll();
+        sensorRepository.deleteById(id);
 
         Sensor buffer = new Sensor(id, LocalDateTime.now(), data);
         sensorRepository.save(buffer);
     }
 
-    public Optional<String> getAllFromOrigin(long id) {
+    public Optional<String> getDataFromOrigin(long id) {
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 config.getOriginUrl()+ config.getSensorEndpoint() + id,
                 HttpMethod.GET,

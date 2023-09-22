@@ -11,6 +11,7 @@ app:
       station-endpoint: "/station/findAll/"
       sensor-endpoint: "/station/sensors/"
       data-endpoint: "/data/getData/"
+      summary-endpoint: "/aqindex/getIndex/"
       #in days
       expiration-stations: 30
       expiration-sensors: 30

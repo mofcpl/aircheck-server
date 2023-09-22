@@ -1,4 +1,4 @@
-package pl.aircheck.server.sensor;
+package pl.aircheck.server.summary;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,21 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.aircheck.server.NoDataFromOriginException;
 
-import java.util.List;
-
 @Controller
-class SensorController {
+public class SummaryController {
 
-    private final SensorService sensorService;
+    private final SummaryService summaryService;
 
-    SensorController(SensorService sensorService) {
-        this.sensorService = sensorService;
+    public SummaryController(SummaryService summaryService) {
+        this.summaryService = summaryService;
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @RequestMapping("/station/sensors/{id}")
+    @RequestMapping("/aqindex/getIndex/{id}")
     @ResponseBody
-    public ResponseEntity<String> getSensors(@PathVariable("id") long id) throws NoDataFromOriginException {
-        return ResponseEntity.ok(sensorService.getData(id));
+    public ResponseEntity<String> getSummary(@PathVariable("id") long id) throws NoDataFromOriginException {
+        return ResponseEntity.ok(summaryService.getData(id));
     }
 }

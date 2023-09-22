@@ -1,11 +1,11 @@
-package pl.aircheck.server.data;
+package pl.aircheck.server.station;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Data {
+public class Stations {
 
     @Id
     private long id;
@@ -14,10 +14,10 @@ public class Data {
     @Lob
     private String data;
 
-    public Data() {
+    public Stations() {
     }
 
-    public Data(long id, LocalDateTime update, String data) {
+    public Stations(long id, LocalDateTime update, String data) {
         this.id = id;
         this.update = update;
         this.data = data;

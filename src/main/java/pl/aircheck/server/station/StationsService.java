@@ -10,7 +10,6 @@ import pl.aircheck.server.Config;
 import pl.aircheck.server.NoDataFromOriginException;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,36 +29,36 @@ class StationsService {
         this.config = config;
     }
 
-    public List<Station> getData() throws NoDataFromOriginException {
-        Optional<StationsBuffer> buffer = stationsRepository.findFirst();
+    //Trzeba wawalić magic number
+    public String getData() throws NoDataFromOriginException {
+        Optional<Stations> buffer = stationsRepository.findById(1L);
         if(buffer.isEmpty() || isOutdated(buffer.get())) {
-            Optional<List<Station>> dataFromOrigin = getAllFromOrigin();
+            Optional<String> dataFromOrigin = getAllFromOrigin();
             dataFromOrigin.ifPresent(this::updateData);
             return dataFromOrigin.orElseThrow(() -> new NoDataFromOriginException("Data is outdated and fetch from origin failed"));
         }
         return buffer.get().getData();
     }
 
-    public void updateData(List<Station> data) {
+    public void updateData(String data) {
         stationsRepository.deleteAll();
 
-        StationsUpdate update = new StationsUpdate(LocalDateTime.now());
-        StationsBuffer buffer = new StationsBuffer(update, data);
+        Stations buffer = new Stations(1L, LocalDateTime.now(), data);
         stationsRepository.save(buffer);
     }
-    public Optional<List<Station>> getAllFromOrigin() {
-        ResponseEntity<List<Station>> responseEntity = restTemplate.exchange(
+    public Optional<String> getAllFromOrigin() {
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
                 config.getOriginUrl()+ config.getStationEndpoint(),
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Station>>() {}
+                new ParameterizedTypeReference<String>() {}
         );
         return Optional.ofNullable(responseEntity.getBody());
     }
 
-    private boolean isOutdated(StationsBuffer buffer) {
+    private boolean isOutdated(Stations buffer) {
         LocalDateTime currentDate = LocalDateTime.now();
-        Duration duration = Duration.between(buffer.getUpdate().getDate(), currentDate);
+        Duration duration = Duration.between(buffer.getUpdate(), currentDate);
         return duration.toDays() > config.getExpirationStations();
     }
 }

@@ -1,11 +1,13 @@
-package pl.aircheck.server.data;
+package pl.aircheck.server.summary;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Data {
+public class Summary {
 
     @Id
     private long id;
@@ -14,10 +16,10 @@ public class Data {
     @Lob
     private String data;
 
-    public Data() {
+    public Summary() {
     }
 
-    public Data(long id, LocalDateTime update, String data) {
+    public Summary(long id, LocalDateTime update, String data) {
         this.id = id;
         this.update = update;
         this.data = data;

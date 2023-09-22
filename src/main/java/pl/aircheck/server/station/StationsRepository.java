@@ -5,7 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-interface StationsRepository extends CrudRepository<StationsBuffer, Long> {
-    @Query(value = "SELECT * FROM STATIONS_BUFFER LIMIT 1", nativeQuery = true)
-    public Optional<StationsBuffer> findFirst();
+interface StationsRepository extends CrudRepository<Stations, Long> {
+
 }
