@@ -1,5 +1,6 @@
 package pl.aircheck.server;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.MappedSuperclass;
@@ -10,18 +11,17 @@ import java.time.LocalDateTime;
 public abstract class BufferEntity {
 
     @Id
-    private long id;
+    protected long id;
 
-    private LocalDateTime update;
-    @Lob
-    private String data;
+    protected LocalDateTime updateTime;
+    protected String data;
 
     public BufferEntity() {
     }
 
     public BufferEntity(long id, LocalDateTime update, String data) {
         this.id = id;
-        this.update = update;
+        this.updateTime = update;
         this.data = data;
     }
 
@@ -33,12 +33,12 @@ public abstract class BufferEntity {
         this.id = id;
     }
 
-    public LocalDateTime getUpdate() {
-        return update;
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate(LocalDateTime update) {
-        this.update = update;
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getData() {

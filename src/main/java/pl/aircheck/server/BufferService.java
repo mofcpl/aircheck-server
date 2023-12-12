@@ -56,7 +56,7 @@ public abstract class BufferService<T extends BufferEntity> {
 
     private void updateData(String data, long id, T objectInstance) {
         objectInstance.setId(id);
-        objectInstance.setUpdate(LocalDateTime.now());
+        objectInstance.setUpdateTime(LocalDateTime.now());
         objectInstance.setData(data);
         bufferRepository.save(objectInstance);
     }
@@ -74,7 +74,7 @@ public abstract class BufferService<T extends BufferEntity> {
 
     private boolean isOutdated(T buffer) {
         LocalDateTime currentDate = LocalDateTime.now();
-        Duration duration = Duration.between(buffer.getUpdate(), currentDate);
+        Duration duration = Duration.between(buffer.getUpdateTime(), currentDate);
         return durationUnit.apply(duration) > expirationTime;
     }
 

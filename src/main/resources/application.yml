@@ -1,0 +1,13 @@
+app:
+  data:
+    origin-url: "http://api.gios.gov.pl/pjp-api/rest"
+    station-endpoint: "/station/findAll/"
+    sensor-endpoint: "/station/sensors/"
+    data-endpoint: "/data/getData/"
+    summary-endpoint: "/aqindex/getIndex/"
+    #in days
+    expiration-stations: 30
+    expiration-sensors: 30
+    #in minutes
+    expiration-summary: 30
+    expiration-data: 30
