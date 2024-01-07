@@ -6,18 +6,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.aircheck.server.Config;
+import pl.aircheck.server.ConfigProp;
 import pl.aircheck.server.NoDataFromOriginException;
 
 import java.time.Duration;
-import java.util.List;
 
 @Controller
 class SensorController {
 
     private final SensorService sensorService;
 
-    SensorController(SensorService sensorService, Config config) {
+    SensorController(SensorService sensorService, ConfigProp config) {
         this.sensorService = sensorService;
         this.sensorService.setExpirationTime(config.getExpirationSensors());
         this.sensorService.setEndpoint(config.getSensorEndpoint());

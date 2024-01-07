@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.aircheck.server.Config;
+import pl.aircheck.server.ConfigProp;
 import pl.aircheck.server.NoDataFromOriginException;
 
 import java.time.Duration;
@@ -16,7 +16,7 @@ public class SummaryController {
 
     private final SummaryService summaryService;
 
-    public SummaryController(SummaryService summaryService, Config config) {
+    public SummaryController(SummaryService summaryService, ConfigProp config) {
         this.summaryService = summaryService;
         summaryService.setExpirationTime(config.getExpirationSummary());
         summaryService.setEndpoint(config.getSummaryEndpoint());

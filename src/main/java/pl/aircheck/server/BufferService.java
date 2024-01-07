@@ -15,14 +15,14 @@ import java.util.function.Function;
 public abstract class BufferService<T extends BufferEntity> {
     private final CrudRepository<T, Long> bufferRepository;
     private final RestTemplate restTemplate;
-    private final Config config;
+    private final ConfigProp config;
 
     private int expirationTime;
     private Function<Duration, Long> durationUnit;
     private String endpoint;
     private boolean addIdToEndpoint = true;
 
-    public BufferService(CrudRepository<T, Long> bufferRepository, RestTemplateBuilder restTemplateBuilder, Config config) {
+    public BufferService(CrudRepository<T, Long> bufferRepository, RestTemplateBuilder restTemplateBuilder, ConfigProp config) {
         this.bufferRepository = bufferRepository;
         this.restTemplate = restTemplateBuilder.build();
         this.config = config;

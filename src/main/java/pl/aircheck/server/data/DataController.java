@@ -6,18 +6,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.aircheck.server.Config;
+import pl.aircheck.server.ConfigProp;
 import pl.aircheck.server.NoDataFromOriginException;
 
 import java.time.Duration;
-import java.util.List;
 
 @Controller
 public class DataController {
 
     private final DataService dataService;
 
-    public DataController(DataService dataService, Config config) {
+    public DataController(DataService dataService, ConfigProp config) {
         this.dataService = dataService;
         this.dataService.setExpirationTime(config.getExpirationData());
         this.dataService.setEndpoint(config.getDataEndpoint());

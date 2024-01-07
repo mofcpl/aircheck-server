@@ -5,12 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.aircheck.server.Config;
+import pl.aircheck.server.ConfigProp;
 import pl.aircheck.server.NoDataFromOriginException;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 class StationsController {
@@ -18,7 +16,7 @@ class StationsController {
     private final StationsService stationService;
     final long OnlyOneRecordId = 1L;
 
-    public StationsController(StationsService stationService, Config config) {
+    public StationsController(StationsService stationService, ConfigProp config) {
         this.stationService = stationService;
         this.stationService.setExpirationTime(config.getExpirationStations());
         this.stationService.setEndpoint(config.getStationEndpoint());

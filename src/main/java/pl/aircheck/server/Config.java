@@ -1,64 +1,26 @@
 package pl.aircheck.server;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ConfigurationProperties(prefix = "app.data")
+import java.util.Arrays;
+
+
+@Configuration
 public class Config {
-    private final String originUrl;
-    private final String stationEndpoint;
-    private final String sensorEndpoint;
-    private final String dataEndpoint;
-    private final String summaryEndpoint;
-    private final int expirationStations;
-    private final int expirationSensors;
-    private final int expirationSummary;
-    private final int expirationData;
 
-    public Config(String originUrl, String stationEndpoint, String sensorEndpoint, String dataEndpoint, String summaryEndpoint, int expirationStations, int expirationSensors, int expirationSummary, int expirationData) {
-        this.originUrl = originUrl;
-        this.stationEndpoint = stationEndpoint;
-        this.sensorEndpoint = sensorEndpoint;
-        this.dataEndpoint = dataEndpoint;
-        this.summaryEndpoint = summaryEndpoint;
-        this.expirationStations = expirationStations;
-        this.expirationSensors = expirationSensors;
-        this.expirationSummary = expirationSummary;
-        this.expirationData = expirationData;
-    }
-
-    public String getOriginUrl() {
-        return originUrl;
-    }
-
-    public int getExpirationStations() {
-        return expirationStations;
-    }
-
-    public int getExpirationSensors() {
-        return expirationSensors;
-    }
-
-    public int getExpirationSummary() {
-        return expirationSummary;
-    }
-
-    public int getExpirationData() {
-        return expirationData;
-    }
-
-    public String getStationEndpoint() {
-        return stationEndpoint;
-    }
-
-    public String getSensorEndpoint() {
-        return sensorEndpoint;
-    }
-
-    public String getDataEndpoint() {
-        return dataEndpoint;
-    }
-
-    public String getSummaryEndpoint() {
-        return summaryEndpoint;
-    }
+//    @Profile("dev")
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/*").allowedOrigins("http://localhost:4200/");
+//            }
+//        };
+//    }
 }
