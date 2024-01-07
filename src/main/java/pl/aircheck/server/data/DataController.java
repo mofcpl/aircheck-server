@@ -23,7 +23,6 @@ public class DataController {
         this.dataService.setDurationUnit(Duration::toMinutes);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/data/getData/{id}")
     @ResponseBody
     public ResponseEntity<String> getData(@PathVariable("id") long id) throws NoDataFromOriginException {

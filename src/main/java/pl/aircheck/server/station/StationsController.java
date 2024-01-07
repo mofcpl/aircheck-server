@@ -24,7 +24,6 @@ class StationsController {
         this.stationService.setAddIdToEndpoint(false);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/station/findAll")
     @ResponseBody
     public ResponseEntity<String> findAll() throws NoDataFromOriginException {

@@ -13,14 +13,14 @@ import java.util.Arrays;
 @Configuration
 public class Config {
 
-//    @Profile("dev")
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/*").allowedOrigins("http://localhost:4200/");
-//            }
-//        };
-//    }
+    @Profile("dev")
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:4200/");
+            }
+        };
+    }
 }

@@ -23,7 +23,6 @@ class SensorController {
         this.sensorService.setDurationUnit(Duration::toDays);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/station/sensors/{id}")
     @ResponseBody
     public ResponseEntity<String> getSensors(@PathVariable("id") long id) throws NoDataFromOriginException {
